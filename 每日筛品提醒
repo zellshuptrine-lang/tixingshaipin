@@ -1,0 +1,25 @@
+import requests
+import datetime
+import time
+
+WEBHOOK = "https://oapi.dingtalk.com/robot/send?access_token=27e55183b6ee81e09707bf95be8e8f2ddadff450985213a6025df59915e43433"
+
+def send_ding_tip():
+    today = datetime.datetime.now().strftime("%Y-%m-%d")
+    content = f"⏰ 每日18点提醒\n{today} 已到下班筛品时间，请大家尽快完成筛品工作！"
+    data = {
+        "msgtype": "text",
+        "text": {"content": content},
+        "at": {"isAtAll": True}
+    }
+    requests.post(WEBHOOK, json=data)
+
+if __name__ == "__main__":
+    while True:
+        now = datetime.datetime.now()
+        # 匹配每天 18:00:00
+        if now.hour == 18 and now.minute == 0 and now.second == 0:
+            send_ding_tip()
+            # 休眠23小时避免重复发送
+            time.sleep(82800)
+        time.sleep(1)
